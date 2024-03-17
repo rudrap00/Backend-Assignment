@@ -8,19 +8,17 @@ export const totalPrice = (req, res) => {
     item_type: itemType,
   } = req.headers;
 
+  if (!zone || !organization_id || !totalDistance || !itemType) {
+    res.json({ error: "Required values are not present in the header" });
+    return;
+  }
+
   (async () => {
-    const data = await getTotalPrice(zone, organization_id);
-
-    if (!data) {
-      res.json({ error: "Required values are not present in the header" });
-      return;
-    }
-
     const {
       base_distance_in_km: baseDistance,
       fix_price: fixPrice,
       km_price: kmPrice,
-    } = data;
+    } = await getTotalPrice(zone, organization_id);
 
     let totalPrice = fixPrice;
 
